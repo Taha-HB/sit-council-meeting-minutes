@@ -1,0 +1,2421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIT Student Council - Meeting Minutes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a5276;
+            --secondary-color: #2e86c1;
+            --accent-color: #f39c12;
+            --light-color: #f8f9fa;
+            --dark-color: #2c3e50;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Auth Styles */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #ddd;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 600;
+            background: #f8f9fa;
+        }
+        
+        .auth-tab.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+            background: white;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .auth-logo i {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .auth-logo h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        
+        /* Main App Styles */
+        .app-container {
+            display: none;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), #e67e22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 1.8rem;
+            margin-bottom: 1.8rem;
+            border-left: 5px solid var(--primary-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 3px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .form-hint {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 0.85rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: #fdfdfd;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 134, 193, 0.2);
+            background: white;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.85rem 1.7rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #20c997);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #e83e8c);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #fd7e14);
+            color: var(--dark-color);
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, var(--info-color), #6f42c1);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .agenda-item, .question-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 1rem;
+            padding: 1.2rem;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .agenda-item:hover, .question-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+        
+        .agenda-content, .question-content {
+            flex-grow: 1;
+        }
+        
+        .agenda-actions, .question-actions {
+            display: flex;
+            gap: 5px;
+            align-items: flex-start;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            transition: all 0.3s;
+            padding: 5px;
+            border-radius: 5px;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-btn:hover {
+            background-color: rgba(0,0,0,0.05);
+            color: var(--secondary-color);
+        }
+        
+        .delete-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .attendee-list, .questions-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 1rem;
+        }
+        
+        .attendee, .question-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.85rem;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .attendee:hover, .question-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+        
+        .attendee-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), #e67e22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .attendee-role, .question-status {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .minutes-preview {
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            padding: 1.8rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #ddd;
+            overflow-x: auto;
+            scrollbar-width: none;
+            background: white;
+            border-radius: 8px;
+            padding: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            padding: 0.85rem 1.7rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+            background: rgba(26, 82, 118, 0.05);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--success-color), #20c997);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.4s;
+            max-width: 350px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, var(--danger-color), #e83e8c);
+        }
+        
+        .notification.warning {
+            background: linear-gradient(135deg, var(--warning-color), #fd7e14);
+            color: var(--dark-color);
+        }
+        
+        .notification.info {
+            background: linear-gradient(135deg, var(--info-color), #6f42c1);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1.8rem;
+            margin-top: 3rem;
+            background: linear-gradient(135deg, var(--dark-color), #34495e);
+            color: white;
+            border-top: 5px solid var(--accent-color);
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 1.8rem;
+            text-align: center;
+            border-top: 5px solid var(--primary-color);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card i {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.8rem;
+        }
+        
+        .stat-card h3 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .mobile-menu-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 200;
+            padding: 2rem;
+            overflow-y: auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-nav.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .mobile-nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .mobile-nav-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .mobile-nav-tab {
+            padding: 1.2rem;
+            border-radius: 8px;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+        }
+        
+        .mobile-nav-tab.active {
+            border-left-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .close-mobile-nav {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .close-mobile-nav:hover {
+            background: #f8f9fa;
+        }
+        
+        .permission-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .permission-granted {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+        
+        .permission-denied {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--secondary-color);
+            background: rgba(46, 134, 193, 0.05);
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        
+        .logo-preview {
+            max-width: 200px;
+            max-height: 100px;
+            margin: 1rem auto;
+            display: block;
+        }
+        
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        
+        .role-president {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+        
+        .role-vice-president {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+        
+        .role-secretary {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+        
+        .role-treasurer {
+            background: rgba(155, 89, 182, 0.1);
+            color: #9b59b6;
+        }
+        
+        .role-member {
+            background: rgba(241, 196, 15, 0.1);
+            color: #f1c40f;
+        }
+        
+        .role-guest {
+            background: rgba(149, 165, 166, 0.1);
+            color: #95a5a6;
+        }
+        
+        .auto-save-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: var(--success-color);
+            margin-left: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .auto-save-indicator.show {
+            opacity: 1;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .agenda-item, .question-item {
+                flex-direction: column;
+            }
+            
+            .agenda-actions, .question-actions {
+                justify-content: flex-end;
+            }
+            
+            .attendee-list, .questions-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+                position: absolute;
+                left: 1.5rem;
+                top: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.2rem;
+            }
+            
+            .logo {
+                margin-left: 40px;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .time-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .attendee-list, .questions-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Section -->
+    <div class="auth-container" id="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <i class="fas fa-users"></i>
+                <h2>SIT Student Council</h2>
+                <p>Meeting Minutes System</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-form="login">Login</div>
+                <div class="auth-tab" data-form="register">Register</div>
+            </div>
+            
+            <form class="auth-form active" id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="your.email@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                
+                <div style="text-align: center; margin-top: 1rem;">
+                    <p>Demo: admin@example.com / password123</p>
+                </div>
+            </form>
+            
+            <form class="auth-form" id="register-form">
+                <div class="form-group">
+                    <label for="register-name">Full Name</label>
+                    <input type="text" id="register-name" placeholder="Your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" placeholder="your.email@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" placeholder="Create a password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-role">Council Role</label>
+                    <select id="register-role" required>
+                        <option value="">Select your role</option>
+                        <option value="President">President</option>
+                        <option value="Vice President">Vice President</option>
+                        <option value="Secretary">Secretary</option>
+                        <option value="Treasurer">Treasurer</option>
+                        <option value="PRO">PRO</option>
+                        <option value="Club Coordinator">Club Coordinator</option>
+                        <option value="Member">Member</option>
+                        <option value="Guest">Guest</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Main Application -->
+    <div class="app-container" id="app-container">
+        <header>
+            <div class="header-content">
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <img id="council-logo" src="" alt="Council Logo" class="logo-image" style="display: none;">
+                    <div class="logo-icon">📋</div>
+                    <div>
+                        <h1>SIT Student Council Meeting Minutes</h1>
+                        <div class="subtitle" id="user-role-display">Secretary: Tahir Hasan</div>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">TH</div>
+                    <div>
+                        <div class="user-name" id="user-name">Tahir Hasan</div>
+                        <div class="user-role" id="user-role">Secretary</div>
+                    </div>
+                    <button class="btn btn-danger" id="logout-btn" style="padding: 0.5rem 1rem;">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="mobile-nav" id="mobile-nav">
+            <div class="mobile-nav-header">
+                <h2>Navigation</h2>
+                <button class="close-mobile-nav" id="close-mobile-nav">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mobile-nav-tabs">
+                <div class="mobile-nav-tab active" data-tab="dashboard">Dashboard</div>
+                <div class="mobile-nav-tab" data-tab="meeting-info">Meeting Information</div>
+                <div class="mobile-nav-tab" data-tab="agenda">Agenda Items</div>
+                <div class="mobile-nav-tab" data-tab="questions">Student Questions</div>
+                <div class="mobile-nav-tab" data-tab="attendees">Attendees</div>
+                <div class="mobile-nav-tab" data-tab="minutes">Minutes & Actions</div>
+                <div class="mobile-nav-tab" data-tab="publish">Publish & Share</div>
+                <div class="mobile-nav-tab" data-tab="settings">Settings</div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="tabs">
+                <div class="tab active" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </div>
+                <div class="tab" data-tab="meeting-info">
+                    <i class="fas fa-info-circle"></i> Meeting Info
+                </div>
+                <div class="tab" data-tab="agenda">
+                    <i class="fas fa-list-ol"></i> Agenda
+                </div>
+                <div class="tab" data-tab="questions">
+                    <i class="fas fa-question-circle"></i> Student Questions
+                </div>
+                <div class="tab" data-tab="attendees">
+                    <i class="fas fa-users"></i> Attendees
+                </div>
+                <div class="tab" data-tab="minutes">
+                    <i class="fas fa-clipboard-list"></i> Minutes & Actions
+                </div>
+                <div class="tab" data-tab="publish">
+                    <i class="fas fa-share-alt"></i> Publish & Share
+                </div>
+                <div class="tab" data-tab="settings">
+                    <i class="fas fa-cog"></i> Settings
+                </div>
+            </div>
+            
+            <div class="tab-content active" id="dashboard">
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3 id="meetings-count">5</h3>
+                        <p>Meetings This Month</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-check-circle"></i>
+                        <h3 id="action-items-count">12</h3>
+                        <p>Pending Actions</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h3 id="members-count">24</h3>
+                        <p>Council Members</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-file-alt"></i>
+                        <h3 id="minutes-count">18</h3>
+                        <p>Minutes Published</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Recent Meetings</h2>
+                    </div>
+                    <div id="recent-meetings">
+                        <!-- Recent meetings will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Quick Actions</h2>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn" id="new-meeting-btn">
+                            <i class="fas fa-plus"></i> New Meeting
+                        </button>
+                        <button class="btn btn-success" id="view-minutes-btn">
+                            <i class="fas fa-file-alt"></i> View All Minutes
+                        </button>
+                        <button class="btn btn-warning" id="pending-actions-btn">
+                            <i class="fas fa-tasks"></i> Pending Actions
+                        </button>
+                        <button class="btn btn-info" id="manage-questions-btn">
+                            <i class="fas fa-question-circle"></i> Student Questions
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="meeting-info">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Meeting Details</h2>
+                        <span class="auto-save-indicator" id="meeting-info-save-indicator">
+                            <i class="fas fa-check-circle"></i> Saved
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="meeting-title">Meeting Title</label>
+                        <input type="text" id="meeting-title" placeholder="e.g., Monthly Student Council Meeting">
+                    </div>
+                    <div class="form-group">
+                        <label for="meeting-date">Date</label>
+                        <input type="date" id="meeting-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="meeting-time">Time</label>
+                        <div class="time-inputs">
+                            <div>
+                                <label for="meeting-start-time">Start Time</label>
+                                <input type="time" id="meeting-start-time">
+                            </div>
+                            <div>
+                                <label for="meeting-end-time">End Time</label>
+                                <input type="time" id="meeting-end-time">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="meeting-location">Location</label>
+                        <input type="text" id="meeting-location" placeholder="e.g., Conference Room A">
+                    </div>
+                    <div class="form-group">
+                        <label for="meeting-chair">Chairperson</label>
+                        <input type="text" id="meeting-chair" placeholder="Name of the chairperson">
+                    </div>
+                    <div class="form-group">
+                        <label for="meeting-minutes-taker">Minutes Taker</label>
+                        <input type="text" id="meeting-minutes-taker" value="Tahir Hasan" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="agenda">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Meeting Agenda</h2>
+                        <button class="btn" id="add-agenda-item">
+                            <i class="fas fa-plus"></i> Add Agenda Item
+                        </button>
+                    </div>
+                    <div id="agenda-items">
+                        <!-- Agenda items will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="questions">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Student Questions & Concerns</h2>
+                        <button class="btn" id="add-question">
+                            <i class="fas fa-plus"></i> Add Question
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <p class="form-hint">Add questions and concerns raised by students before the meeting that should be discussed.</p>
+                    </div>
+                    <div id="questions-container">
+                        <!-- Questions will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="attendees">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Attendees</h2>
+                        <button class="btn" id="add-attendee">
+                            <i class="fas fa-user-plus"></i> Add Attendee
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label for="attendee-name">Name</label>
+                        <input type="text" id="attendee-name" placeholder="Attendee name">
+                    </div>
+                    <div class="form-group">
+                        <label for="attendee-role">Role</label>
+                        <select id="attendee-role">
+                            <option value="President">President</option>
+                            <option value="Vice President">Vice President</option>
+                            <option value="Secretary">Secretary</option>
+                            <option value="Treasurer">Treasurer</option>
+                            <option value="PRO">PRO</option>
+                            <option value="Club Coordinator">Club Coordinator</option>
+                            <option value="Member">Member</option>
+                            <option value="Guest">Guest</option>
+                        </select>
+                    </div>
+                    <button class="btn" id="save-attendee">
+                        <i class="fas fa-save"></i> Save Attendee
+                    </button>
+                    
+                    <div class="attendee-list" id="attendee-list">
+                        <!-- Attendees will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="minutes">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Meeting Minutes</h2>
+                        <span class="auto-save-indicator" id="minutes-save-indicator">
+                            <i class="fas fa-check-circle"></i> Saved
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="meeting-summary">Meeting Summary</label>
+                        <textarea id="meeting-summary" placeholder="Provide a brief summary of the meeting..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="discussion-points">Key Discussion Points</label>
+                        <textarea id="discussion-points" placeholder="List the main points discussed during the meeting..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="decisions-made">Decisions Made</label>
+                        <textarea id="decisions-made" placeholder="Document decisions that were made during the meeting..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="action-items">Action Items</label>
+                        <textarea id="action-items" placeholder="List action items, responsible persons, and deadlines..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="next-meeting">Next Meeting Details</label>
+                        <textarea id="next-meeting" placeholder="Date, time, and agenda for the next meeting..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="publish">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Publish Meeting Minutes</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="minutes-preview">Minutes Preview</label>
+                        <div class="minutes-preview" id="minutes-preview">
+                            <!-- Minutes preview will be generated here -->
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn" id="generate-preview">
+                            <i class="fas fa-sync"></i> Generate Preview
+                        </button>
+                        <button class="btn btn-success" id="save-minutes">
+                            <i class="fas fa-save"></i> Save Minutes
+                        </button>
+                        <button class="btn" id="export-pdf">
+                            <i class="fas fa-file-pdf"></i> Export as PDF
+                        </button>
+                        <button class="btn btn-success" id="publish-google-forms">
+                            <i class="fab fa-google"></i> Publish to Google Forms
+                        </button>
+                    </div>
+                    <div class="form-group" id="google-forms-section" style="display: none; margin-top: 20px;">
+                        <label for="google-forms-link">Google Forms Link</label>
+                        <input type="text" id="google-forms-link" placeholder="Paste Google Forms link here">
+                        <button class="btn" id="save-google-forms-link" style="margin-top: 10px;">
+                            <i class="fas fa-link"></i> Save Link
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="settings">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Council Settings</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Council Logo</label>
+                        <div class="upload-area" id="logo-upload-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload or drag and drop</p>
+                            <p class="form-hint">PNG, JPG, GIF up to 5MB</p>
+                        </div>
+                        <input type="file" id="logo-upload" accept="image/*" style="display: none;">
+                        <img id="logo-preview" class="logo-preview" style="display: none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="institution-name">Institution Name</label>
+                        <input type="text" id="institution-name" placeholder="e.g., SIT International University">
+                    </div>
+                    <div class="form-group">
+                        <label for="council-name">Council Name</label>
+                        <input type="text" id="council-name" placeholder="e.g., SIT Student Council">
+                    </div>
+                    <div class="form-group">
+                        <label>Member Permissions</label>
+                        <div class="form-hint">Control which members can edit meeting information</div>
+                        <div id="permissions-list">
+                            <!-- Permissions will be added here dynamically -->
+                        </div>
+                    </div>
+                    <button class="btn btn-success" id="save-settings">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification" id="notification">
+            <i class="fas fa-check-circle"></i>
+            <span>Operation completed successfully!</span>
+        </div>
+
+        <footer>
+            <p>SIT Student Council Meeting Minutes System &copy; 2023 | Designed for Secretary Tahir Hasan</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simulated database for demo purposes
+        const mockDatabase = {
+            users: [
+                { id: 1, name: "Tahir Hasan", email: "admin@example.com", password: "password123", role: "Secretary", avatar: "TH", canEdit: true },
+                { id: 2, name: "Ibrahim Mohammed", email: "ibrahim@example.com", password: "password123", role: "President", avatar: "IM", canEdit: false },
+                { id: 3, name: "Asli Ahmed", email: "asli@example.com", password: "password123", role: "Vice President", avatar: "AA", canEdit: false },
+                { id: 4, name: "keab Engidawork", email: "keab@example.com", password: "password123", role: "Treasurer", avatar: "KE", canEdit: false }
+            ],
+            meetings: [
+                { 
+                    id: 1, 
+                    title: "Monthly Council Meeting", 
+                    date: "2023-10-15", 
+                    startTime: "14:00",
+                    endTime: "16:30",
+                    location: "Conference Room A", 
+                    chair: "Ibrahim Mohammed", 
+                    minutesTaker: "Tahir Hasan",
+                    attendees: [
+                        { name: "Tahir Hasan", role: "Secretary" },
+                        { name: "Ibrahim Mohammed", role: "President" },
+                        { name: "Asli Ahmed", role: "Vice President" },
+                        { name: "keab Engidawork", role: "Treasurer" }
+                    ],
+                    agenda: [
+                        { title: "Budget Review", description: "Review of current semester budget", presenter: "keab Engidawork", time: 15 },
+                        { title: "Upcoming Events", description: "Planning for cultural fest and sports day", presenter: "Asli Ahmed", time: 20 }
+                    ],
+                    questions: [
+                        { id: 1, question: "When will the library extended hours be implemented?", askedBy: "Student Union", status: "Pending" },
+                        { id: 2, question: "Are there plans to improve Wi-Fi connectivity in dormitories?", askedBy: "Residence Committee", status: "Addressed" }
+                    ],
+                    summary: "Monthly council meeting to review budget and plan upcoming events.",
+                    discussionPoints: "Budget constraints were discussed. Need to prioritize events based on available funds.",
+                    decisions: "Approved budget for cultural fest. Postponed sports day to next semester.",
+                    actionItems: "Treasurer to finalize budget by next week. PRO to start promotions for cultural fest.",
+                    nextMeeting: "Next meeting scheduled for November 12th at 2 PM in Conference Room B."
+                }
+            ],
+            settings: {
+                institutionName: "SIT International University",
+                councilName: "SIT Student Council",
+                logo: null
+            }
+        };
+
+        // Current user and app state
+        let currentUser = null;
+        let attendees = [];
+        let questions = [];
+        let agendaItemCount = 0;
+        let questionCount = 0;
+        let autoSaveTimeout = null;
+        
+        // DOM elements
+        const authContainer = document.getElementById('auth-container');
+        const appContainer = document.getElementById('app-container');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const logoutBtn = document.getElementById('logout-btn');
+        const notification = document.getElementById('notification');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileNav = document.getElementById('mobile-nav');
+        const closeMobileNav = document.getElementById('close-mobile-nav');
+        const mobileNavTabs = document.querySelectorAll('.mobile-nav-tab');
+        const logoUploadArea = document.getElementById('logo-upload-area');
+        const logoUpload = document.getElementById('logo-upload');
+        const logoPreview = document.getElementById('logo-preview');
+        const councilLogo = document.getElementById('council-logo');
+        
+        // Check if user is already logged in (for demo purposes)
+        function checkAuthStatus() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showApp();
+            }
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const icon = notification.querySelector('i');
+            const text = notification.querySelector('span');
+            
+            text.textContent = message;
+            notification.className = 'notification';
+            
+            if (type === 'error') {
+                notification.classList.add('error');
+                icon.className = 'fas fa-exclamation-circle';
+            } else if (type === 'warning') {
+                notification.classList.add('warning');
+                icon.className = 'fas fa-exclamation-triangle';
+            } else if (type === 'info') {
+                notification.classList.add('info');
+                icon.className = 'fas fa-info-circle';
+            } else {
+                icon.className = 'fas fa-check-circle';
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Show auto-save indicator
+        function showAutoSaveIndicator(indicatorId) {
+            const indicator = document.getElementById(indicatorId);
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Auto-save functionality
+        function setupAutoSave() {
+            // Meeting info auto-save
+            const meetingInfoInputs = [
+                'meeting-title', 'meeting-date', 'meeting-start-time', 'meeting-end-time',
+                'meeting-location', 'meeting-chair'
+            ];
+            
+            meetingInfoInputs.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('input', () => {
+                        clearTimeout(autoSaveTimeout);
+                        autoSaveTimeout = setTimeout(() => {
+                            saveMeetingData();
+                            showAutoSaveIndicator('meeting-info-save-indicator');
+                        }, 1000);
+                    });
+                }
+            });
+            
+            // Minutes auto-save
+            const minutesInputs = [
+                'meeting-summary', 'discussion-points', 'decisions-made', 
+                'action-items', 'next-meeting'
+            ];
+            
+            minutesInputs.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('input', () => {
+                        clearTimeout(autoSaveTimeout);
+                        autoSaveTimeout = setTimeout(() => {
+                            saveMeetingData();
+                            showAutoSaveIndicator('minutes-save-indicator');
+                        }, 1000);
+                    });
+                }
+            });
+        }
+        
+        // Save meeting data to localStorage
+        function saveMeetingData() {
+            const meetingData = {
+                title: document.getElementById('meeting-title').value,
+                date: document.getElementById('meeting-date').value,
+                startTime: document.getElementById('meeting-start-time').value,
+                endTime: document.getElementById('meeting-end-time').value,
+                location: document.getElementById('meeting-location').value,
+                chair: document.getElementById('meeting-chair').value,
+                summary: document.getElementById('meeting-summary').value,
+                discussionPoints: document.getElementById('discussion-points').value,
+                decisions: document.getElementById('decisions-made').value,
+                actionItems: document.getElementById('action-items').value,
+                nextMeeting: document.getElementById('next-meeting').value,
+                attendees: attendees,
+                agenda: getAgendaItems(),
+                questions: questions
+            };
+            
+            localStorage.setItem('currentMeeting', JSON.stringify(meetingData));
+        }
+        
+        // Load meeting data from localStorage
+        function loadMeetingData() {
+            const savedMeeting = localStorage.getItem('currentMeeting');
+            if (savedMeeting) {
+                const meetingData = JSON.parse(savedMeeting);
+                
+                document.getElementById('meeting-title').value = meetingData.title || '';
+                document.getElementById('meeting-date').value = meetingData.date || '';
+                document.getElementById('meeting-start-time').value = meetingData.startTime || '';
+                document.getElementById('meeting-end-time').value = meetingData.endTime || '';
+                document.getElementById('meeting-location').value = meetingData.location || '';
+                document.getElementById('meeting-chair').value = meetingData.chair || '';
+                document.getElementById('meeting-summary').value = meetingData.summary || '';
+                document.getElementById('discussion-points').value = meetingData.discussionPoints || '';
+                document.getElementById('decisions-made').value = meetingData.decisions || '';
+                document.getElementById('action-items').value = meetingData.actionItems || '';
+                document.getElementById('next-meeting').value = meetingData.nextMeeting || '';
+                
+                if (meetingData.attendees) {
+                    attendees = meetingData.attendees;
+                    updateAttendeeList();
+                }
+                
+                if (meetingData.agenda) {
+                    loadAgendaItems(meetingData.agenda);
+                }
+                
+                if (meetingData.questions) {
+                    questions = meetingData.questions;
+                    updateQuestionsList();
+                }
+            }
+        }
+        
+        // Get agenda items from DOM
+        function getAgendaItems() {
+            const agendaItems = [];
+            document.querySelectorAll('.agenda-item').forEach(item => {
+                const agendaItem = {
+                    title: item.querySelector('.agenda-title').value,
+                    description: item.querySelector('.agenda-description').value,
+                    presenter: item.querySelector('.agenda-presenter').value,
+                    time: item.querySelector('.agenda-time').value
+                };
+                agendaItems.push(agendaItem);
+            });
+            return agendaItems;
+        }
+        
+        // Load agenda items to DOM
+        function loadAgendaItems(agendaItems) {
+            const agendaContainer = document.getElementById('agenda-items');
+            agendaContainer.innerHTML = '';
+            agendaItemCount = 0;
+            
+            agendaItems.forEach(item => {
+                agendaItemCount++;
+                const agendaItem = document.createElement('div');
+                agendaItem.className = 'agenda-item';
+                agendaItem.innerHTML = `
+                    <div class="agenda-content">
+                        <div class="form-group">
+                            <label>Agenda Item ${agendaItemCount}</label>
+                            <input type="text" class="agenda-title" value="${item.title}" placeholder="Title of agenda item">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="agenda-description" placeholder="Description of agenda item">${item.description}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Presenter</label>
+                            <input type="text" class="agenda-presenter" value="${item.presenter}" placeholder="Person presenting this item">
+                        </div>
+                        <div class="form-group">
+                            <label>Time Allocated (minutes)</label>
+                            <input type="number" class="agenda-time" value="${item.time}" placeholder="e.g., 15">
+                        </div>
+                    </div>
+                    <div class="agenda-actions">
+                        <button class="action-btn delete-agenda">🗑️</button>
+                    </div>
+                `;
+                
+                agendaContainer.appendChild(agendaItem);
+                
+                // Add delete functionality
+                agendaItem.querySelector('.delete-agenda').addEventListener('click', () => {
+                    agendaContainer.removeChild(agendaItem);
+                    saveMeetingData();
+                });
+                
+                // Add auto-save to agenda inputs
+                const inputs = agendaItem.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    input.addEventListener('input', () => {
+                        clearTimeout(autoSaveTimeout);
+                        autoSaveTimeout = setTimeout(() => {
+                            saveMeetingData();
+                        }, 1000);
+                    });
+                });
+            });
+        }
+        
+        // Login functionality
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            const user = mockDatabase.users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showApp();
+                showNotification(`Welcome back, ${user.name}!`);
+            } else {
+                showNotification('Invalid email or password', 'error');
+            }
+        });
+        
+        // Register functionality
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const role = document.getElementById('register-role').value;
+            
+            // Check if user already exists
+            const existingUser = mockDatabase.users.find(u => u.email === email);
+            if (existingUser) {
+                showNotification('User with this email already exists', 'error');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: mockDatabase.users.length + 1,
+                name,
+                email,
+                password,
+                role,
+                avatar: name.split(' ').map(n => n[0]).join('').toUpperCase(),
+                canEdit: false // By default, only secretary can edit
+            };
+            
+            mockDatabase.users.push(newUser);
+            currentUser = newUser;
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            showApp();
+            showNotification(`Account created successfully! Welcome, ${name}!`);
+        });
+        
+        // Auth tabs functionality
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const formId = tab.getAttribute('data-form');
+                
+                // Update active tab
+                authTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Show corresponding form
+                document.querySelectorAll('.auth-form').forEach(form => {
+                    form.classList.remove('active');
+                });
+                document.getElementById(`${formId}-form`).classList.add('active');
+            });
+        });
+        
+        // Logout functionality
+        logoutBtn.addEventListener('click', () => {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showAuth();
+            showNotification('You have been logged out');
+        });
+        
+        // Show authentication screen
+        function showAuth() {
+            authContainer.style.display = 'flex';
+            appContainer.style.display = 'none';
+            
+            // Reset forms
+            loginForm.reset();
+            registerForm.reset();
+        }
+        
+        // Show application screen
+        function showApp() {
+            authContainer.style.display = 'none';
+            appContainer.style.display = 'block';
+            
+            // Update user info
+            document.getElementById('user-name').textContent = currentUser.name;
+            document.getElementById('user-role').textContent = currentUser.role;
+            document.getElementById('user-role-display').textContent = `${currentUser.role}: ${currentUser.name}`;
+            document.getElementById('user-avatar').textContent = currentUser.avatar;
+            document.getElementById('meeting-minutes-taker').value = currentUser.name;
+            
+            // Load settings
+            loadSettings();
+            
+            // Initialize dashboard
+            updateDashboard();
+            
+            // Load saved meeting data
+            loadMeetingData();
+            
+            // Set up auto-save
+            setupAutoSave();
+            
+            // Initialize with sample data
+            initializeSampleData();
+            
+            // Set up permissions based on user role
+            setupPermissions();
+        }
+        
+        // Set up permissions based on user role
+        function setupPermissions() {
+            const editableElements = document.querySelectorAll('input, textarea, select, button');
+            
+            if (currentUser.role !== 'Secretary' && !currentUser.canEdit) {
+                editableElements.forEach(element => {
+                    if (element.id !== 'logout-btn' && !element.classList.contains('action-btn')) {
+                        element.disabled = true;
+                        element.style.opacity = '0.7';
+                        element.style.cursor = 'not-allowed';
+                    }
+                });
+                
+                // Show permission message
+                showNotification('You have view-only access. Contact the Secretary for editing permissions.', 'info');
+            }
+        }
+        
+        // Update dashboard with stats
+        function updateDashboard() {
+            document.getElementById('meetings-count').textContent = mockDatabase.meetings.length;
+            document.getElementById('action-items-count').textContent = Math.floor(Math.random() * 20) + 5;
+            document.getElementById('members-count').textContent = mockDatabase.users.length;
+            document.getElementById('minutes-count').textContent = mockDatabase.meetings.length;
+            
+            // Populate recent meetings
+            const recentMeetingsContainer = document.getElementById('recent-meetings');
+            recentMeetingsContainer.innerHTML = '';
+            
+            mockDatabase.meetings.forEach(meeting => {
+                const meetingElement = document.createElement('div');
+                meetingElement.className = 'agenda-item';
+                meetingElement.innerHTML = `
+                    <div class="agenda-content">
+                        <h3>${meeting.title}</h3>
+                        <p><strong>Date:</strong> ${meeting.date} | <strong>Time:</strong> ${meeting.startTime} - ${meeting.endTime}</p>
+                        <p><strong>Location:</strong> ${meeting.location}</p>
+                        <p>${meeting.summary}</p>
+                    </div>
+                    <div class="agenda-actions">
+                        <button class="action-btn view-meeting" data-id="${meeting.id}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                `;
+                
+                recentMeetingsContainer.appendChild(meetingElement);
+            });
+            
+            // Add event listeners to view buttons
+            document.querySelectorAll('.view-meeting').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const meetingId = parseInt(e.target.closest('.view-meeting').getAttribute('data-id'));
+                    loadMeetingFromDatabase(meetingId);
+                    switchToTab('minutes');
+                });
+            });
+        }
+        
+        // Load meeting data from database
+        function loadMeetingFromDatabase(meetingId) {
+            const meeting = mockDatabase.meetings.find(m => m.id === meetingId);
+            if (!meeting) return;
+            
+            document.getElementById('meeting-title').value = meeting.title;
+            document.getElementById('meeting-date').value = meeting.date;
+            document.getElementById('meeting-start-time').value = meeting.startTime;
+            document.getElementById('meeting-end-time').value = meeting.endTime;
+            document.getElementById('meeting-location').value = meeting.location;
+            document.getElementById('meeting-chair').value = meeting.chair;
+            document.getElementById('meeting-minutes-taker').value = meeting.minutesTaker;
+            
+            // Load attendees
+            attendees = [...meeting.attendees];
+            updateAttendeeList();
+            
+            // Load agenda items
+            loadAgendaItems(meeting.agenda);
+            
+            // Load questions
+            questions = [...meeting.questions];
+            updateQuestionsList();
+            
+            // Load minutes
+            document.getElementById('meeting-summary').value = meeting.summary;
+            document.getElementById('discussion-points').value = meeting.discussionPoints;
+            document.getElementById('decisions-made').value = meeting.decisions;
+            document.getElementById('action-items').value = meeting.actionItems;
+            document.getElementById('next-meeting').value = meeting.nextMeeting;
+        }
+        
+        // Tab functionality
+        function setupTabs() {
+            // Desktop tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchToTab(tabId);
+                });
+            });
+            
+            // Mobile tabs
+            mobileNavTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchToTab(tabId);
+                    mobileNav.classList.remove('active');
+                });
+            });
+        }
+        
+        function switchToTab(tabId) {
+            // Update desktop tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update mobile tabs
+            mobileNavTabs.forEach(t => t.classList.remove('active'));
+            document.querySelector(`.mobile-nav-tab[data-tab="${tabId}"]`).classList.add('active');
+        }
+        
+        // Mobile menu functionality
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileNav.classList.add('active');
+        });
+        
+        closeMobileNav.addEventListener('click', () => {
+            mobileNav.classList.remove('active');
+        });
+        
+        // Agenda items functionality
+        document.getElementById('add-agenda-item').addEventListener('click', () => {
+            if (currentUser.role !== 'Secretary' && !currentUser.canEdit) {
+                showNotification('Only the Secretary can add agenda items', 'error');
+                return;
+            }
+            
+            agendaItemCount++;
+            const agendaItems = document.getElementById('agenda-items');
+            
+            const agendaItem = document.createElement('div');
+            agendaItem.className = 'agenda-item';
+            agendaItem.innerHTML = `
+                <div class="agenda-content">
+                    <div class="form-group">
+                        <label>Agenda Item ${agendaItemCount}</label>
+                        <input type="text" class="agenda-title" placeholder="Title of agenda item">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="agenda-description" placeholder="Description of agenda item"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Presenter</label>
+                        <input type="text" class="agenda-presenter" placeholder="Person presenting this item">
+                    </div>
+                    <div class="form-group">
+                        <label>Time Allocated (minutes)</label>
+                        <input type="number" class="agenda-time" placeholder="e.g., 15">
+                    </div>
+                </div>
+                <div class="agenda-actions">
+                    <button class="action-btn delete-agenda">🗑️</button>
+                </div>
+            `;
+            
+            agendaItems.appendChild(agendaItem);
+            
+            // Add delete functionality
+            agendaItem.querySelector('.delete-agenda').addEventListener('click', () => {
+                agendaItems.removeChild(agendaItem);
+                saveMeetingData();
+            });
+            
+            // Add auto-save to agenda inputs
+            const inputs = agendaItem.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    clearTimeout(autoSaveTimeout);
+                    autoSaveTimeout = setTimeout(() => {
+                        saveMeetingData();
+                    }, 1000);
+                });
+            });
+            
+            saveMeetingData();
+        });
+
+        // Questions functionality
+        document.getElementById('add-question').addEventListener('click', () => {
+            if (currentUser.role !== 'Secretary' && !currentUser.canEdit) {
+                showNotification('Only the Secretary can add questions', 'error');
+                return;
+            }
+            
+            questionCount++;
+            const questionsContainer = document.getElementById('questions-container');
+            
+            const questionItem = document.createElement('div');
+            questionItem.className = 'question-item';
+            questionItem.innerHTML = `
+                <div class="question-content">
+                    <div class="form-group">
+                        <label>Question ${questionCount}</label>
+                        <input type="text" class="question-text" placeholder="Enter question or concern from students">
+                    </div>
+                    <div class="form-group">
+                        <label>Asked By</label>
+                        <input type="text" class="question-asked-by" placeholder="e.g., Student Union, Residence Committee">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select class="question-status">
+                            <option value="Pending">Pending</option>
+                            <option value="Addressed">Addressed</option>
+                            <option value="Deferred">Deferred</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="question-actions">
+                    <button class="action-btn delete-question">🗑️</button>
+                </div>
+            `;
+            
+            questionsContainer.appendChild(questionItem);
+            
+            // Add delete functionality
+            questionItem.querySelector('.delete-question').addEventListener('click', () => {
+                questionsContainer.removeChild(questionItem);
+                saveMeetingData();
+            });
+            
+            // Add auto-save to question inputs
+            const inputs = questionItem.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    clearTimeout(autoSaveTimeout);
+                    autoSaveTimeout = setTimeout(() => {
+                        saveMeetingData();
+                    }, 1000);
+                });
+            });
+            
+            saveMeetingData();
+        });
+
+        // Update questions list
+        function updateQuestionsList() {
+            const questionsContainer = document.getElementById('questions-container');
+            questionsContainer.innerHTML = '';
+            questionCount = 0;
+            
+            questions.forEach((question, index) => {
+                questionCount++;
+                const questionItem = document.createElement('div');
+                questionItem.className = 'question-item';
+                questionItem.innerHTML = `
+                    <div class="question-content">
+                        <div class="form-group">
+                            <label>Question ${questionCount}</label>
+                            <input type="text" class="question-text" value="${question.question}" placeholder="Enter question or concern from students">
+                        </div>
+                        <div class="form-group">
+                            <label>Asked By</label>
+                            <input type="text" class="question-asked-by" value="${question.askedBy}" placeholder="e.g., Student Union, Residence Committee">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select class="question-status">
+                                <option value="Pending" ${question.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Addressed" ${question.status === 'Addressed' ? 'selected' : ''}>Addressed</option>
+                                <option value="Deferred" ${question.status === 'Deferred' ? 'selected' : ''}>Deferred</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="question-actions">
+                        <button class="action-btn delete-question">🗑️</button>
+                    </div>
+                `;
+                
+                questionsContainer.appendChild(questionItem);
+                
+                // Add delete functionality
+                questionItem.querySelector('.delete-question').addEventListener('click', () => {
+                    questions.splice(index, 1);
+                    updateQuestionsList();
+                    saveMeetingData();
+                });
+                
+                // Add auto-save to question inputs
+                const inputs = questionItem.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    input.addEventListener('input', () => {
+                        questions[index] = {
+                            id: question.id,
+                            question: questionItem.querySelector('.question-text').value,
+                            askedBy: questionItem.querySelector('.question-asked-by').value,
+                            status: questionItem.querySelector('.question-status').value
+                        };
+                        clearTimeout(autoSaveTimeout);
+                        autoSaveTimeout = setTimeout(() => {
+                            saveMeetingData();
+                        }, 1000);
+                    });
+                });
+            });
+        }
+
+        // Attendees functionality
+        document.getElementById('save-attendee').addEventListener('click', () => {
+            if (currentUser.role !== 'Secretary' && !currentUser.canEdit) {
+                showNotification('Only the Secretary can add attendees', 'error');
+                return;
+            }
+            
+            const name = document.getElementById('attendee-name').value;
+            const role = document.getElementById('attendee-role').value;
+            
+            if (name) {
+                attendees.push({ name, role });
+                updateAttendeeList();
+                document.getElementById('attendee-name').value = '';
+                saveMeetingData();
+                showNotification('Attendee added successfully');
+            }
+        });
+        
+        function updateAttendeeList() {
+            const attendeeList = document.getElementById('attendee-list');
+            attendeeList.innerHTML = '';
+            
+            attendees.forEach((attendee, index) => {
+                const avatarText = attendee.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                const roleClass = `role-${attendee.role.toLowerCase().replace(' ', '-')}`;
+                
+                const attendeeElement = document.createElement('div');
+                attendeeElement.className = 'attendee';
+                attendeeElement.innerHTML = `
+                    <div class="attendee-avatar">${avatarText}</div>
+                    <div>
+                        <div>${attendee.name} <span class="role-badge ${roleClass}">${attendee.role}</span></div>
+                        <div class="attendee-role">${getRoleDescription(attendee.role)}</div>
+                    </div>
+                    <button class="action-btn delete-attendee" data-index="${index}">❌</button>
+                `;
+                
+                attendeeList.appendChild(attendeeElement);
+            });
+            
+            // Add delete functionality to attendees
+            document.querySelectorAll('.delete-attendee').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    if (currentUser.role !== 'Secretary' && !currentUser.canEdit) {
+                        showNotification('Only the Secretary can remove attendees', 'error');
+                        return;
+                    }
+                    
+                    const index = parseInt(e.target.closest('.delete-attendee').getAttribute('data-index'));
+                    attendees.splice(index, 1);
+                    updateAttendeeList();
+                    saveMeetingData();
+                    showNotification('Attendee removed');
+                });
+            });
+        }
+        
+        // Get role description
+        function getRoleDescription(role) {
+            const descriptions = {
+                'President': 'Leads the council and represents students',
+                'Vice President': 'Supports the President and manages operations',
+                'Secretary': 'Records minutes and manages documentation',
+                'Treasurer': 'Manages finances and budget',
+                'PRO': 'Handles public relations and communications',
+                'Club Coordinator': 'Coordinates with student clubs',
+                'Member': 'Active council member',
+                'Guest': 'Guest attendee'
+            };
+            
+            return descriptions[role] || 'Council participant';
+        }
+
+        // Generate preview functionality
+        document.getElementById('generate-preview').addEventListener('click', () => {
+            const meetingTitle = document.getElementById('meeting-title').value || 'Meeting Title';
+            const meetingDate = document.getElementById('meeting-date').value || 'Date not set';
+            const startTime = document.getElementById('meeting-start-time').value || 'Time not set';
+            const endTime = document.getElementById('meeting-end-time').value || 'Time not set';
+            const meetingLocation = document.getElementById('meeting-location').value || 'Location not set';
+            const meetingChair = document.getElementById('meeting-chair').value || 'Chairperson not set';
+            const minutesTaker = document.getElementById('meeting-minutes-taker').value;
+            const institutionName = document.getElementById('institution-name').value || 'SIT International University';
+            const councilName = document.getElementById('council-name').value || 'SIT Student Council';
+            
+            let agendaText = '';
+            document.querySelectorAll('.agenda-item').forEach((item, index) => {
+                const title = item.querySelector('.agenda-title').value || `Agenda Item ${index+1}`;
+                const description = item.querySelector('.agenda-description').value || 'No description provided';
+                const presenter = item.querySelector('.agenda-presenter').value || 'Not specified';
+                const time = item.querySelector('.agenda-time').value || 'Not specified';
+                
+                agendaText += `${index+1}. ${title}\n   Presenter: ${presenter}\n   Time: ${time} minutes\n   Description: ${description}\n\n`;
+            });
+            
+            let attendeesText = '';
+            attendees.forEach(attendee => {
+                attendeesText += `• ${attendee.name} (${attendee.role})\n`;
+            });
+            
+            let questionsText = '';
+            document.querySelectorAll('.question-item').forEach((item, index) => {
+                const question = item.querySelector('.question-text').value || `Question ${index+1}`;
+                const askedBy = item.querySelector('.question-asked-by').value || 'Not specified';
+                const status = item.querySelector('.question-status').value || 'Pending';
+                
+                questionsText += `${index+1}. ${question}\n   Asked by: ${askedBy}\n   Status: ${status}\n\n`;
+            });
+            
+            const meetingSummary = document.getElementById('meeting-summary').value || 'No summary provided';
+            const discussionPoints = document.getElementById('discussion-points').value || 'No discussion points recorded';
+            const decisionsMade = document.getElementById('decisions-made').value || 'No decisions recorded';
+            const actionItems = document.getElementById('action-items').value || 'No action items recorded';
+            const nextMeeting = document.getElementById('next-meeting').value || 'Next meeting details not set';
+            
+            const preview = `
+${institutionName.toUpperCase()}
+${councilName.toUpperCase()}
+
+OFFICIAL MEETING MINUTES
+========================
+
+MEETING DETAILS:
+Title: ${meetingTitle}
+Date: ${meetingDate}
+Time: ${startTime} - ${endTime}
+Location: ${meetingLocation}
+Chairperson: ${meetingChair}
+Minutes Taker: ${minutesTaker}
+
+ATTENDEES:
+${attendeesText || 'No attendees recorded'}
+
+AGENDA:
+${agendaText || 'No agenda items recorded'}
+
+STUDENT QUESTIONS & CONCERNS:
+${questionsText || 'No questions recorded'}
+
+MEETING SUMMARY:
+${meetingSummary}
+
+KEY DISCUSSION POINTS:
+${discussionPoints}
+
+DECISIONS MADE:
+${decisionsMade}
+
+ACTION ITEMS:
+${actionItems}
+
+NEXT MEETING:
+${nextMeeting}
+
+Minutes prepared by: ${minutesTaker}
+Date of preparation: ${new Date().toLocaleDateString()}
+
+Approved by:
+_________________________
+${meetingChair}
+(Chairperson)
+            `;
+            
+            document.getElementById('minutes-preview').textContent = preview;
+        });
+
+        // Save minutes functionality
+        document.getElementById('save-minutes').addEventListener('click', () => {
+            // Create a new meeting object
+            const newMeeting = {
+                id: mockDatabase.meetings.length + 1,
+                title: document.getElementById('meeting-title').value || 'Untitled Meeting',
+                date: document.getElementById('meeting-date').value,
+                startTime: document.getElementById('meeting-start-time').value,
+                endTime: document.getElementById('meeting-end-time').value,
+                location: document.getElementById('meeting-location').value,
+                chair: document.getElementById('meeting-chair').value,
+                minutesTaker: document.getElementById('meeting-minutes-taker').value,
+                attendees: [...attendees],
+                agenda: getAgendaItems(),
+                questions: questions,
+                summary: document.getElementById('meeting-summary').value,
+                discussionPoints: document.getElementById('discussion-points').value,
+                decisions: document.getElementById('decisions-made').value,
+                actionItems: document.getElementById('action-items').value,
+                nextMeeting: document.getElementById('next-meeting').value
+            };
+            
+            // Add to mock database
+            mockDatabase.meetings.push(newMeeting);
+            
+            // Clear current meeting data
+            localStorage.removeItem('currentMeeting');
+            
+            showNotification('Meeting minutes saved successfully');
+            updateDashboard();
+        });
+
+        // Export as PDF functionality
+        document.getElementById('export-pdf').addEventListener('click', () => {
+            // In a real application, this would generate a PDF
+            showNotification('PDF export initiated. This would download a formal PDF document in a real application.');
+        });
+
+        // Publish to Google Forms functionality
+        document.getElementById('publish-google-forms').addEventListener('click', () => {
+            document.getElementById('google-forms-section').style.display = 'block';
+            showNotification('Ready to publish to Google Forms. Paste your form link above.');
+        });
+
+        // Save Google Forms link
+        document.getElementById('save-google-forms-link').addEventListener('click', () => {
+            const link = document.getElementById('google-forms-link').value;
+            if (link) {
+                // In a real application, this would save the link to a database
+                showNotification('Google Forms link saved successfully');
+            } else {
+                showNotification('Please enter a valid Google Forms link', 'error');
+            }
+        });
+
+        // Logo upload functionality
+        logoUploadArea.addEventListener('click', () => {
+            logoUpload.click();
+        });
+        
+        logoUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    logoPreview.src = e.target.result;
+                    logoPreview.style.display = 'block';
+                    councilLogo.src = e.target.result;
+                    councilLogo.style.display = 'block';
+                    
+                    // Save to settings
+                    mockDatabase.settings.logo = e.target.result;
+                    saveSettings();
+                    showNotification('Logo uploaded successfully');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Load settings
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('councilSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                mockDatabase.settings = settings;
+            }
+            
+            document.getElementById('institution-name').value = mockDatabase.settings.institutionName;
+            document.getElementById('council-name').value = mockDatabase.settings.councilName;
+            
+            if (mockDatabase.settings.logo) {
+                logoPreview.src = mockDatabase.settings.logo;
+                logoPreview.style.display = 'block';
+                councilLogo.src = mockDatabase.settings.logo;
+                councilLogo.style.display = 'block';
+            }
+            
+            // Update permissions list
+            updatePermissionsList();
+        }
+        
+        // Save settings
+        function saveSettings() {
+            mockDatabase.settings.institutionName = document.getElementById('institution-name').value;
+            mockDatabase.settings.councilName = document.getElementById('council-name').value;
+            
+            localStorage.setItem('councilSettings', JSON.stringify(mockDatabase.settings));
+            showNotification('Settings saved successfully');
+        }
+        
+        // Update permissions list
+        function updatePermissionsList() {
+            const permissionsList = document.getElementById('permissions-list');
+            permissionsList.innerHTML = '';
+            
+            mockDatabase.users.forEach(user => {
+                if (user.role !== 'Secretary') {
+                    const permissionItem = document.createElement('div');
+                    permissionItem.className = 'attendee';
+                    permissionItem.innerHTML = `
+                        <div class="attendee-avatar">${user.avatar}</div>
+                        <div>
+                            <div>${user.name}</div>
+                            <div class="attendee-role">${user.role}</div>
+                        </div>
+                        <div>
+                            <button class="btn ${user.canEdit ? 'btn-success' : 'btn-outline'} permission-toggle" data-id="${user.id}">
+                                ${user.canEdit ? 'Revoke Access' : 'Grant Access'}
+                            </button>
+                        </div>
+                    `;
+                    
+                    permissionsList.appendChild(permissionItem);
+                }
+            });
+            
+            // Add event listeners to permission toggles
+            document.querySelectorAll('.permission-toggle').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const userId = parseInt(e.target.getAttribute('data-id'));
+                    const user = mockDatabase.users.find(u => u.id === userId);
+                    
+                    if (user) {
+                        user.canEdit = !user.canEdit;
+                        updatePermissionsList();
+                        showNotification(`Editing permission ${user.canEdit ? 'granted' : 'revoked'} for ${user.name}`);
+                    }
+                });
+            });
+        }
+        
+        // Save settings button
+        document.getElementById('save-settings').addEventListener('click', () => {
+            saveSettings();
+        });
+
+        // Quick action buttons
+        document.getElementById('new-meeting-btn').addEventListener('click', () => {
+            if (currentUser.role !== 'Secretary' && !currentUser.canEdit) {
+                showNotification('Only the Secretary can create new meetings', 'error');
+                return;
+            }
+            
+            // Clear form fields for a new meeting
+            document.getElementById('meeting-title').value = '';
+            document.getElementById('meeting-date').value = '';
+            document.getElementById('meeting-start-time').value = '';
+            document.getElementById('meeting-end-time').value = '';
+            document.getElementById('meeting-location').value = '';
+            document.getElementById('meeting-chair').value = '';
+            
+            // Clear attendees
+            attendees = [];
+            updateAttendeeList();
+            
+            // Clear agenda
+            document.getElementById('agenda-items').innerHTML = '';
+            agendaItemCount = 0;
+            
+            // Clear questions
+            questions = [];
+            updateQuestionsList();
+            
+            // Clear minutes
+            document.getElementById('meeting-summary').value = '';
+            document.getElementById('discussion-points').value = '';
+            document.getElementById('decisions-made').value = '';
+            document.getElementById('action-items').value = '';
+            document.getElementById('next-meeting').value = '';
+            
+            // Clear saved meeting data
+            localStorage.removeItem('currentMeeting');
+            
+            // Switch to meeting info tab
+            switchToTab('meeting-info');
+            showNotification('Started a new meeting template');
+        });
+        
+        document.getElementById('view-minutes-btn').addEventListener('click', () => {
+            switchToTab('publish');
+            showNotification('Viewing all meeting minutes');
+        });
+        
+        document.getElementById('pending-actions-btn').addEventListener('click', () => {
+            showNotification('Displaying pending action items');
+        });
+        
+        document.getElementById('manage-questions-btn').addEventListener('click', () => {
+            switchToTab('questions');
+            showNotification('Managing student questions');
+        });
+
+        // Initialize with sample data for demonstration
+        function initializeSampleData() {
+            // Set current date as default
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('meeting-date').value = formattedDate;
+            
+            // Set current time as default (rounded to nearest 15 minutes)
+            const now = new Date();
+            const minutes = Math.ceil(now.getMinutes() / 15) * 15;
+            now.setMinutes(minutes);
+            const formattedTime = now.toTimeString().substring(0, 5);
+            document.getElementById('meeting-start-time').value = formattedTime;
+            
+            // Set end time to 2 hours later
+            now.setHours(now.getHours() + 2);
+            const formattedEndTime = now.toTimeString().substring(0, 5);
+            document.getElementById('meeting-end-time').value = formattedEndTime;
+            
+            // Add sample attendees
+            const sampleAttendees = [
+                { name: 'Tahir Hasan', role: 'Secretary' },
+                { name: 'Ibrahim Mohammed', role: 'President' },
+                { name: 'Asli Ahmed', role: 'Vice President' },
+                { name: 'keab Engidawork', role: 'Treasurer' }
+            ];
+            
+            attendees = sampleAttendees;
+            updateAttendeeList();
+            
+            // Add sample questions
+            questions = [
+                { id: 1, question: "When will the library extended hours be implemented?", askedBy: "Student Union", status: "Pending" },
+                { id: 2, question: "Are there plans to improve Wi-Fi connectivity in dormitories?", askedBy: "Residence Committee", status: "Addressed" }
+            ];
+            updateQuestionsList();
+        }
+        
+        // Initialize the application
+        function init() {
+            checkAuthStatus();
+            setupTabs();
+        }
+        
+        // Start the application
+        init();
+    </script>
+</body>
+</html>
